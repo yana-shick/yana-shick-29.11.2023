@@ -3,6 +3,7 @@ import { Main } from "./Main";
 
 import { useState } from "react";
 import { useEffect } from "react";
+import { useRef } from "react";
 
 import store from "../store";
 import { updateActive } from "../actionCreator";
@@ -21,9 +22,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 
 export const Home = () => {
-	const apikey = "3MSy8fxf6LQX6t2bW0cZl42HAVAuvRAb";
+	// const apikey = "3MSy8fxf6LQX6t2bW0cZl42HAVAuvRAb";
+	const apikey = "9QmfmlRtMb49LFqx7faqstwGAOOPBCTA";
 	const [city, setCity] = useState("");
 	const [citykey, setCitykey] = useState("");
+
+	const correctCityName = useRef("");
 
 	const [showToast, setShowToast] = useState(false);
 	const toggleShowToast = () => setShowToast(!showToast);
@@ -36,9 +40,7 @@ export const Home = () => {
 			console.log("city is empty");
 			return;
 		}
-		console.log(
-			`trying to call http://dataservice.accuweather.com/locations/v1/cities/autocomplete?apikey=${apikey}&q=${city}`
-		);
+		console.log(`trying to fetch:  autocomplite`);
 
 		fetch(
 			`http://dataservice.accuweather.com/locations/v1/cities/autocomplete?apikey=${apikey}&q=${city}`
@@ -50,11 +52,11 @@ export const Home = () => {
 				console.log(`received autocomplied data length= ${data.length}`);
 				if (data.length === 1) {
 					console.log(`trying to set citykey ${data[0].Key}`);
+					correctCityName.current = data[0].LocalizedName;
 					setCitykey(data[0].Key);
 				} else {
 					const datalist = document.getElementById("cities");
 					for (let i = datalist.children.length - 1; i >= 0; i--) {
-						console.log(datalist.children[i]);
 						datalist.children[i].remove();
 					}
 					data.forEach((city) => {
@@ -76,7 +78,7 @@ export const Home = () => {
 			return;
 		}
 		// fetch weather:
-		console.log("i am trying to fetch current weather");
+		console.log("trying to fetch: current weather");
 		fetch(
 			`http://dataservice.accuweather.com/currentconditions/v1/${citykey}?apikey=${apikey}`
 		)
@@ -84,10 +86,15 @@ export const Home = () => {
 				return res.json();
 			})
 			.then((data) => {
-				console.log(`recieved data: `, data);
+				console.log(
+					`recieved data current weather: `,
+					correctCityName,
+					data,
+					citykey
+				);
 				store.dispatch(updateActive({ city, data, citykey }));
 
-				const isFavorite = document.cookie.includes(`${citykey}=${city}`);
+				const isFavorite = document.cookie.includes(`favorite_${citykey}`);
 				store.dispatch(toggleIsFavorite(isFavorite));
 			})
 			.catch((err) => {
@@ -97,6 +104,7 @@ export const Home = () => {
 		// fetch 5 day forecast:
 		// if (C or F)
 		// returns object
+		console.log("trying to fetch: forecast");
 		fetch(
 			`http://dataservice.accuweather.com/forecasts/v1/daily/5day/${citykey}?apikey=${apikey}&metric=true`
 		)
@@ -122,7 +130,9 @@ export const Home = () => {
 							}}
 							list="cities"
 						/>
-						<datalist id="cities"></datalist>
+						<datalist id="cities">
+							<option>test</option>
+						</datalist>
 						<Button variant="primary" type="submit">
 							<FontAwesomeIcon icon={faMagnifyingGlass} />
 						</Button>

@@ -8,8 +8,8 @@ export const Forecast = (props) => {
 			<Card>
 				<Card.Img variant="top" src="holder.js/100px180" />
 				<Card.Body>
-					<Card.Title>{props.day.date}</Card.Title>
-					<Card.Text>{props.day.temperature.min.value}</Card.Text>
+					<Card.Title>{props?.day?.date}</Card.Title>
+					<Card.Text>{props?.day?.temperature?.min?.value}</Card.Text>
 				</Card.Body>
 			</Card>
 		</Col>

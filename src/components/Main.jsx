@@ -19,6 +19,7 @@ import { Forecast } from "./Forecast";
 
 export const Main = () => {
 	const storeData = useSelector((state) => state.reducerActive);
+	console.log(`main componenta: store: `, storeData);
 	const weatherCity = storeData.weather?.city;
 	const weatherTempertureValue = storeData.weather?.temperature?.value;
 	const weatherTemperatureUnit = storeData.weather?.temperature?.unit;
@@ -32,11 +33,18 @@ export const Main = () => {
 
 	const toggleFavorites = () => {
 		if (isFavorite) {
-			document.cookie = `${weatherCityKey}=${weatherCity}; expires=Thu, 01 Jan 1970 00:00:01 GMT`;
+			document.cookie = `favorite_${weatherCityKey}=delete; expires=Thu, 01 Jan 1970 00:00:01 GMT`;
 			store.dispatch(deleteFavorite(weatherCityKey));
 			store.dispatch(toggleIsFavorite(!isFavorite));
 		} else {
 			document.cookie = `${weatherCityKey}=${weatherCity}`;
+			console.log(
+				`favorite_${weatherCityKey}=${JSON.stringify(storeData.weather)}`
+			);
+
+			document.cookie = `favorite_${weatherCityKey}=${JSON.stringify(
+				storeData.weather
+			)}`;
 			store.dispatch(addFavorite(weatherCityKey));
 			store.dispatch(toggleIsFavorite(!isFavorite));
 		}

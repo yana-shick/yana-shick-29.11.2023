@@ -3,13 +3,13 @@ export const updateActive = (weather) => {
 		type: "updateActive",
 		payload: {
 			city: weather.city,
-			weatherText: weather.data.WeatherText,
+			weatherText: weather.data[0].WeatherText,
 			temperature: {
-				value: weather.data.Temperature.Metric.Value,
-				unit: weather.data.Temperature.Metric.Unit,
+				value: weather.data[0].Temperature.Metric.Value,
+				unit: weather.data[0].Temperature.Metric.Unit,
 			},
-			date: weather.data.LocalObservationDateTime,
-			weatherIcon: weather.data.WeatherIcon,
+			date: weather.data[0].LocalObservationDateTime,
+			weatherIcon: weather.data[0].WeatherIcon,
 			citykey: weather.citykey,
 		},
 	};
