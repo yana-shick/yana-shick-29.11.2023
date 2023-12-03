@@ -1,5 +1,7 @@
 import React from "react";
+import { Header } from "./Header";
 import { Main } from "./Main";
+import { Favorites } from "./Favorites";
 
 import { useState } from "react";
 import { useEffect } from "react";
@@ -9,6 +11,7 @@ import store from "../store";
 import { updateActive } from "../actionCreator";
 import { updateForecast } from "../actionCreator";
 import { toggleIsFavorite } from "../actionCreator";
+import { addListFavorites } from "../actionCreator";
 
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
@@ -22,8 +25,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 
 export const Home = () => {
-	// const apikey = "3MSy8fxf6LQX6t2bW0cZl42HAVAuvRAb";
-	const apikey = "9QmfmlRtMb49LFqx7faqstwGAOOPBCTA";
+	const apikey = "3MSy8fxf6LQX6t2bW0cZl42HAVAuvRAb";
+	// const apikey = "9QmfmlRtMb49LFqx7faqstwGAOOPBCTA";
 	const [city, setCity] = useState("");
 	const [citykey, setCitykey] = useState("");
 
@@ -33,7 +36,12 @@ export const Home = () => {
 	const toggleShowToast = () => setShowToast(!showToast);
 
 	const [errors, setErrors] = useState("");
+	const [displayWeather, setDisplayWeather] = useState("block");
+	const [displayFavorite, setDisplayFavorite] = useState("block");
 
+	// ---------------------------------------------
+	// -----------------AUTOCOMPLITE----------------
+	// ---------------------------------------------
 	useEffect(() => {
 		setShowToast(false);
 		if (!city) {
@@ -71,6 +79,10 @@ export const Home = () => {
 				setShowToast(true);
 			});
 	}, [city]);
+
+	// ---------------------------------------------
+	// ------------WEATHER--+--FORECAST-------------
+	// ---------------------------------------------
 
 	useEffect(() => {
 		if (!citykey) {
@@ -115,34 +127,118 @@ export const Home = () => {
 				console.log(`recieved forecastData: `, forecastData);
 				store.dispatch(updateForecast(forecastData));
 			});
+
+		// ---------------------------------------------
+		// -------------------FAVORITES-----------------
+		// ---------------------------------------------
+		console.log("trying to fetch: list of favorites");
+
+		const listFavoritesFullData = [];
+
+		if (displayFavorite === "none") return;
+		const interval = 23 * 60 * 60 * 1000;
+
+		let decodedCookie = decodeURIComponent(document.cookie);
+		let arrFromCookie = decodedCookie.split(";");
+		let listFavoritesCookie = arrFromCookie.filter((favorite) => {
+			return favorite.indexOf("favorite_") === 1;
+		});
+
+		console.log(`received cookies: `, listFavoritesCookie);
+
+		if (!listFavoritesCookie) return;
+		listFavoritesCookie.forEach((val) => {
+			console.log(`favorite from cookie `, val);
+			const splitVal = val.split("=");
+			const citykey = splitVal[0].split("_")[1];
+			const city = JSON.parse(splitVal[1]).city;
+
+			const dateFromCookie = JSON.parse(splitVal[1]).date;
+			const secondsFromCookie = new Date(dateFromCookie).getTime();
+			const now = new Date();
+
+			if (secondsFromCookie - now > interval) {
+				console.log("need to update");
+
+				fetch(
+					`http://dataservice.accuweather.com/currentconditions/v1/${citykey}?apikey=${apikey}`
+				)
+					.then((res) => {
+						return res.json();
+					})
+					.then((data) => {
+						console.log(`trying to build list with full data`);
+
+						const weatherText = data[0].WeatherText;
+						listFavoritesFullData.push({
+							citykey,
+							city,
+							weatherText,
+						});
+					})
+					.catch((err) => {
+						setErrors("favorites is temorarily unavaible");
+						setShowToast(true);
+						console.log(err);
+					});
+			} else {
+				console.log("no need to update");
+
+				const weatherText = JSON.parse(splitVal[1]).weatherText;
+
+				listFavoritesFullData.push({
+					citykey,
+					city,
+					weatherText,
+				});
+			}
+
+			console.log(
+				`list of favorites trying add to store:: `,
+				listFavoritesFullData
+			);
+			store.dispatch(addListFavorites({ ...listFavoritesFullData }));
+		});
 	}, [citykey]);
 
 	return (
 		<Container>
-			<Row className="justify-content-md-center m-3">
-				<Col md={6}>
-					<InputGroup>
-						<Form.Control
-							type="text"
-							id="search_bar"
-							onChange={(e) => {
-								setCity(e.target.value);
-							}}
-							list="cities"
-						/>
-						<datalist id="cities">
-							<option>test</option>
-						</datalist>
-						<Button variant="primary" type="submit">
-							<FontAwesomeIcon icon={faMagnifyingGlass} />
-						</Button>
-					</InputGroup>
-				</Col>
-			</Row>
-			<Row>
-				<Main />
-			</Row>
+			<Header
+				setDisplayWeather={setDisplayWeather}
+				setDisplayFavorite={setDisplayFavorite}
+			/>
 
+			<Container id="home" style={{ display: displayWeather }}>
+				{/* SEARCH */}
+				<Row className="justify-content-md-center m-3">
+					<Col md={6}>
+						<InputGroup>
+							<Form.Control
+								type="text"
+								id="search_bar"
+								onChange={(e) => {
+									setCity(e.target.value);
+								}}
+								list="cities"
+							/>
+							<datalist id="cities">
+								<option>test</option>
+							</datalist>
+
+							<FontAwesomeIcon icon={faMagnifyingGlass} />
+						</InputGroup>
+					</Col>
+				</Row>
+				{/* WEATHER */}
+				<Row>
+					<Main />
+				</Row>
+			</Container>
+			{/* FAVORITES */}
+
+			<Favorites style={{ display: displayFavorite }} />
+
+			{/* ERROR MESSAGES */}
 			<Toast show={showToast} onClose={toggleShowToast}>
 				<Toast.Body>{errors}</Toast.Body>
 			</Toast>

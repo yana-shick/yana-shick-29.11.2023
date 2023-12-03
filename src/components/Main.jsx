@@ -45,7 +45,13 @@ export const Main = () => {
 			document.cookie = `favorite_${weatherCityKey}=${JSON.stringify(
 				storeData.weather
 			)}`;
-			store.dispatch(addFavorite(weatherCityKey));
+			store.dispatch(
+				addFavorite({
+					citykey: weatherCityKey,
+					city: weatherCity,
+					weatherText: weatherWeatherText,
+				})
+			);
 			store.dispatch(toggleIsFavorite(!isFavorite));
 		}
 	};

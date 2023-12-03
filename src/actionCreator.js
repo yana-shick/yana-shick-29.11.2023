@@ -45,10 +45,10 @@ export const toggleIsFavorite = (isFavorite) => {
 	};
 };
 
-export const addFavorite = (id) => {
+export const addFavorite = (city) => {
 	return {
 		type: "addFavorite",
-		payload: id,
+		payload: city,
 	};
 };
 
@@ -56,5 +56,12 @@ export const deleteFavorite = (id) => {
 	return {
 		type: "deleteFavorite",
 		payload: id,
+	};
+};
+
+export const addListFavorites = (listFavorites) => {
+	return {
+		type: "addListFavorites",
+		payload: listFavorites,
 	};
 };
