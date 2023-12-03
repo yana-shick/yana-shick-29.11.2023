@@ -13,7 +13,7 @@ export const Favorites = (props) => {
 			{storeData.map((city) => {
 				return <FavoriteCard city={city} />;
 			})}
-			TEST FOR FAVORITES
+			FAVORITES
 		</Row>
 	);
 };

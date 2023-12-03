@@ -52,10 +52,10 @@ export const addFavorite = (city) => {
 	};
 };
 
-export const deleteFavorite = (id) => {
+export const deleteFavorite = (citykey) => {
 	return {
 		type: "deleteFavorite",
-		payload: id,
+		payload: citykey,
 	};
 };
 

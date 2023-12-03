@@ -25,8 +25,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 
 export const Home = () => {
-	const apikey = "3MSy8fxf6LQX6t2bW0cZl42HAVAuvRAb";
-	// const apikey = "9QmfmlRtMb49LFqx7faqstwGAOOPBCTA";
+	// const apikey = "3MSy8fxf6LQX6t2bW0cZl42HAVAuvRAb";
+	const apikey = "9QmfmlRtMb49LFqx7faqstwGAOOPBCTA";
 	const [city, setCity] = useState("");
 	const [citykey, setCitykey] = useState("");
 
@@ -58,20 +58,26 @@ export const Home = () => {
 			})
 			.then((data) => {
 				console.log(`received autocomplied data length= ${data.length}`);
-				if (data.length === 1) {
+				// add to chrome autocomplite:
+				const datalist = document.getElementById("cities");
+				for (let i = datalist.children.length - 1; i >= 0; i--) {
+					datalist.children[i].remove();
+				}
+				data.forEach((city) => {
+					let option = document.createElement("option");
+					option.value = city.LocalizedName;
+					datalist.appendChild(option);
+				});
+
+				let cityInOptions = false;
+				for (let i = 0; i < datalist.options.length; i++) {
+					if (datalist.options[i].value === city) cityInOptions = true;
+				}
+
+				if (data.length === 1 || cityInOptions) {
 					console.log(`trying to set citykey ${data[0].Key}`);
 					correctCityName.current = data[0].LocalizedName;
 					setCitykey(data[0].Key);
-				} else {
-					const datalist = document.getElementById("cities");
-					for (let i = datalist.children.length - 1; i >= 0; i--) {
-						datalist.children[i].remove();
-					}
-					data.forEach((city) => {
-						let option = document.createElement("option");
-						option.value = city.LocalizedName;
-						datalist.appendChild(option);
-					});
 				}
 			})
 			.catch((err) => {

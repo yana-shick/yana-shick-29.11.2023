@@ -27,7 +27,9 @@ export const Main = () => {
 	const weatherCityKey = storeData.weather?.citykey;
 
 	const weatherIconIndex = storeData.weather?.weatherIcon;
-	const icon = `https://developer.accuweather.com/sites/default/files/${weatherIconIndex}-s.png`;
+	const icon = weatherIconIndex
+		? `https://developer.accuweather.com/sites/default/files/${weatherIconIndex}-s.png`
+		: null;
 
 	const isFavorite = storeData.isFavorite;
 
