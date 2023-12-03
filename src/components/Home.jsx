@@ -37,7 +37,7 @@ export const Home = () => {
 
 	const [errors, setErrors] = useState("");
 	const [displayWeather, setDisplayWeather] = useState("block");
-	const [displayFavorite, setDisplayFavorite] = useState("block");
+	const [displayFavorite, setDisplayFavorite] = useState("none");
 
 	// ---------------------------------------------
 	// -----------------AUTOCOMPLITE----------------
@@ -141,7 +141,7 @@ export const Home = () => {
 
 		const listFavoritesFullData = [];
 
-		if (displayFavorite === "none") return;
+		// if (displayFavorite === "none") return;
 		const interval = 23 * 60 * 60 * 1000;
 
 		let decodedCookie = decodeURIComponent(document.cookie);
@@ -242,7 +242,7 @@ export const Home = () => {
 			</Container>
 			{/* FAVORITES */}
 
-			<Favorites style={{ display: displayFavorite }} />
+			<Favorites displayStyle={displayFavorite} />
 
 			{/* ERROR MESSAGES */}
 			<Toast show={showToast} onClose={toggleShowToast}>

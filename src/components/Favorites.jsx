@@ -9,7 +9,7 @@ export const Favorites = (props) => {
 	const storeData = useSelector((state) => state.reducerFavorites);
 	console.log(`favorites componenta: store: `, storeData);
 	return (
-		<Row>
+		<Row style={{ display: props.displayStyle }}>
 			{storeData.map((city) => {
 				return <FavoriteCard city={city} />;
 			})}
