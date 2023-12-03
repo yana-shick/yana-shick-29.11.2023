@@ -9,6 +9,9 @@ import Card from "react-bootstrap/Card";
 export const Favorites = () => {
 	// const apikey = "3MSy8fxf6LQX6t2bW0cZl42HAVAuvRAb";
 	const apikey = "9QmfmlRtMb49LFqx7faqstwGAOOPBCTA";
+
+	const interval = 23 * 60 * 60 * 1000;
+
 	let decodedCookie = decodeURIComponent(document.cookie);
 	let arrFromCookie = decodedCookie.split(";");
 	let listFavorites = arrFromCookie.filter((favorite) => {
@@ -27,27 +30,37 @@ export const Favorites = () => {
 			const id = splitVal[0].split("_")[1];
 			const city = JSON.parse(splitVal[1]).city;
 
-			const date = JSON.parse(splitVal[1]).date;
-			console.log(new Date() === date);
+			const dateFromCookie = JSON.parse(splitVal[1]).date;
 
-			console.log(`id: ${id}, city: ${city}, date ${date}`);
+			const secondsFromCookie = new Date(dateFromCookie).getTime();
 
-			// fetch(
-			// 	`http://dataservice.accuweather.com/currentconditions/v1/${id}?apikey=${apikey}`
-			// )
-			// 	.then((res) => {
-			// 		return res.json();
-			// 	})
-			// 	.then((data) => {
-			// 		console.log(`trying to build list with full data`);
-			// 		const weatherText = data[0].WeatherText;
-			// 		listFavoritesFullData.push({ id, city, weatherText });
-			// 	})
-			// 	.catch((err) => {
-			// 		// setErrors("weather is temorarily unavaible");
-			// 		// setShowToast(true);
-			// 		console.log(err);
-			// 	});
+			const now = new Date();
+
+			if (secondsFromCookie - now > interval) {
+				console.log("need to update cookie");
+
+				fetch(
+					`http://dataservice.accuweather.com/currentconditions/v1/${id}?apikey=${apikey}`
+				)
+					.then((res) => {
+						return res.json();
+					})
+					.then((data) => {
+						console.log(`trying to build list with full data`);
+						const weatherText = data[0].WeatherText;
+						listFavoritesFullData.push({ id, city, weatherText });
+					})
+					.catch((err) => {
+						// setErrors("weather is temorarily unavaible");
+						// setShowToast(true);
+						console.log(err);
+					});
+			} else {
+				console.log("no need to update cookie");
+
+				const weatherText = JSON.parse(splitVal[1]).weatherText;
+				listFavoritesFullData.push({ id, city, weatherText });
+			}
 		});
 		console.log(`list full data: `, listFavoritesFullData);
 	}, []);
