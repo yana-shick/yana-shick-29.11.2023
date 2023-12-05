@@ -1,4 +1,5 @@
 import React from "react";
+
 import Card from "react-bootstrap/Card";
 import Col from "react-bootstrap/Col";
 
@@ -10,7 +11,6 @@ export const Forecast = (props) => {
 	const days = ["Sun", "Mon", "Tue", "Wen", "Thi", "Fri", "Sat"];
 	const day = new Date(dayInStore);
 	let dayName = days[day.getDay()];
-	// console.log(`day in forecast: `, dayName);
 	let minTemperature = "";
 	let maxTemperature = "";
 	if (props?.weatherUnit === "C") {

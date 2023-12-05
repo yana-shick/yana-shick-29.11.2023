@@ -1,5 +1,4 @@
 import React from "react";
-import { useState } from "react";
 
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
@@ -19,19 +18,21 @@ import { Forecast } from "./Forecast";
 
 export const Main = () => {
 	const storeData = useSelector((state) => state.reducerActive);
-	// console.log(`main componenta: store: `, storeData);
 	const weatherCity = storeData.weather?.city;
 	const weatherUnit = storeData.weather?.unit;
 	let weatherTempertureValue = "";
-	if (weatherUnit === "C") {
-		weatherTempertureValue = storeData.weather?.temperature?.value;
-	} else {
-		weatherTempertureValue = (
-			storeData.weather?.temperature?.value * 1.8 +
-			32
-		).toFixed(1);
+	try {
+		if (weatherUnit === "C") {
+			weatherTempertureValue = storeData.weather?.temperature?.value;
+		} else {
+			weatherTempertureValue = (
+				storeData.weather?.temperature?.value * 1.8 +
+				32
+			).toFixed(1);
+		}
+	} catch (err) {
+		// console.log(err);
 	}
-	console.log(`temperaturs:`, weatherTempertureValue, weatherUnit);
 
 	const weatherWeatherText = storeData.weather?.weatherText;
 	const weatherCityKey = storeData.weather?.citykey;
@@ -56,9 +57,6 @@ export const Main = () => {
 			store.dispatch(toggleIsFavorite(!isFavorite));
 		} else {
 			document.cookie = `${weatherCityKey}=${weatherCity}`;
-			// console.log(
-			// 	`favorite_${weatherCityKey}=${JSON.stringify(storeData.weather)}`
-			// );
 
 			document.cookie = `favorite_${weatherCityKey}=${JSON.stringify(
 				storeData.weather

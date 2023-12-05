@@ -46,17 +46,13 @@ export const Home = () => {
 	// -----------------DEFAULT VALUE---------------
 	// ---------------------------------------------
 	useEffect(() => {
-		console.log(
-			"starting default-city useEffect, search-value is: ",
-			document.getElementById("search_bar").value
-		);
 		if (document.getElementById("search_bar").value !== "default-city") return;
 		document.getElementById("search_bar").value = "";
 		const getDefaultCityKey = (position) => {
 			const lat = position.coords.latitude;
 			const lon = position.coords.longitude;
 			const coor = `${lat},${lon}`;
-			console.log(`trying to fetch:  default-city`);
+
 			fetch(
 				`https://dataservice.accuweather.com/locations/v1/cities/geoposition/search?apikey=${apikey}&q=${coor}`
 				// `http://###`
@@ -65,17 +61,12 @@ export const Home = () => {
 					return res.json();
 				})
 				.then((data) => {
-					console.log(`reseived data from default request:`, data);
 					if (data.ParentCity) {
 						correctCityName.current = data.ParentCity.LocalizedName;
 						setCitykey(data.ParentCity.Key);
 					} else {
 						correctCityName.current = data.LocalizedName;
 						setCitykey(data.Key);
-						console.log(
-							`default-city: correctCityName: `,
-							correctCityName.current
-						);
 					}
 				})
 				.catch((err) => {
@@ -93,10 +84,8 @@ export const Home = () => {
 	useEffect(() => {
 		setShowToast(false);
 		if (!city) {
-			console.log("city is empty");
 			return;
 		}
-		console.log(`trying to fetch:  autocomplite`);
 
 		fetch(
 			`https://dataservice.accuweather.com/locations/v1/cities/autocomplete?apikey=${apikey}&q=${city}`
@@ -106,8 +95,6 @@ export const Home = () => {
 				return res.json();
 			})
 			.then((data) => {
-				console.log(`received autocomplied data length= ${data.length}`);
-				// add to chrome autocomplite:
 				const datalist = document.getElementById("cities");
 				for (let i = datalist.children.length - 1; i >= 0; i--) {
 					datalist.children[i].remove();
@@ -124,7 +111,6 @@ export const Home = () => {
 				}
 
 				if (data.length === 1 || cityInOptions) {
-					console.log(`trying to set citykey ${data[0].Key}`);
 					correctCityName.current = data[0].LocalizedName;
 					setCitykey(data[0].Key);
 				}
@@ -141,11 +127,9 @@ export const Home = () => {
 
 	useEffect(() => {
 		if (!citykey) {
-			console.log("citykey is empty");
 			return;
 		}
-		// fetch weather:
-		console.log("trying to fetch: current weather");
+
 		fetch(
 			`https://dataservice.accuweather.com/currentconditions/v1/${citykey}?apikey=${apikey}`
 			// `http://###`
@@ -154,16 +138,6 @@ export const Home = () => {
 				return res.json();
 			})
 			.then((data) => {
-				console.log(
-					`recieved data current weather: `,
-					correctCityName.current,
-					data,
-					citykey
-				);
-				console.log(
-					`current weather: correctCityName: `,
-					correctCityName.current
-				);
 				document.getElementById("search_bar").value = "";
 				const nameToDispatch = correctCityName.current;
 				store.dispatch(updateActive({ nameToDispatch, data, citykey }));
@@ -176,9 +150,6 @@ export const Home = () => {
 				setShowToast(true);
 			});
 
-		// fetch object:
-		// returns object
-		console.log("trying to fetch: forecast");
 		fetch(
 			`https://dataservice.accuweather.com/forecasts/v1/daily/5day/${citykey}?apikey=${apikey}&metric=true`
 			// "http:###"
@@ -187,7 +158,6 @@ export const Home = () => {
 				return res.json();
 			})
 			.then((forecastData) => {
-				console.log(`recieved forecastData: `, forecastData);
 				store.dispatch(updateForecast(forecastData));
 			})
 			.catch((err) => {
@@ -198,7 +168,6 @@ export const Home = () => {
 		// ---------------------------------------------
 		// -------------------FAVORITES-----------------
 		// ---------------------------------------------
-		console.log("trying to fetch: list of favorites");
 
 		const listFavoritesFullData = [];
 
@@ -210,11 +179,8 @@ export const Home = () => {
 			return favorite.indexOf("favorite_") === 1;
 		});
 
-		console.log(`received cookies: `, listFavoritesCookie);
-
 		if (!listFavoritesCookie) return;
 		listFavoritesCookie.forEach((val) => {
-			// console.log(`favorite from cookie `, val);
 			const splitVal = val.split("=");
 			const citykey = splitVal[0].split("_")[1];
 			const city = JSON.parse(splitVal[1]).city;
@@ -224,8 +190,6 @@ export const Home = () => {
 			const now = new Date();
 
 			if (secondsFromCookie - now > interval) {
-				// console.log("need to update");
-
 				fetch(
 					`https://dataservice.accuweather.com/currentconditions/v1/${citykey}?apikey=${apikey}`
 					// `http:/###`
@@ -234,8 +198,6 @@ export const Home = () => {
 						return res.json();
 					})
 					.then((data) => {
-						// console.log(`trying to build list with full data`);
-
 						const weatherText = data[0].WeatherText;
 						listFavoritesFullData.push({
 							citykey,
@@ -246,11 +208,8 @@ export const Home = () => {
 					.catch((err) => {
 						setErrors("favorites is temporarily unavaible");
 						setShowToast(true);
-						console.log(err);
 					});
 			} else {
-				// console.log("no need to update");
-
 				const weatherText = JSON.parse(splitVal[1]).weatherText;
 				listFavoritesFullData.push({
 					citykey,
@@ -259,10 +218,6 @@ export const Home = () => {
 				});
 			}
 
-			// console.log(
-			// `list of favorites trying add to store:: `,
-			// listFavoritesFullData
-			// );
 			store.dispatch(addListFavorites({ ...listFavoritesFullData }));
 		});
 	}, [citykey]);

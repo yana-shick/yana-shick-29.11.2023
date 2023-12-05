@@ -1,4 +1,5 @@
 import React from "react";
+
 import store from "../store";
 import { useSelector } from "react-redux";
 import { toggleUnitAction } from "../actionCreator";
@@ -19,10 +20,9 @@ export const Header = (props) => {
 	const weatherUnit = storeData.weather?.unit;
 	const toggleUnit = () => {
 		try {
-			// console.log("here");
 			store.dispatch(toggleUnitAction(weatherUnit === "C" ? "F" : "C"));
 		} catch (err) {
-			// console.log(`error catched`, err);
+			// console.log(err)
 		}
 	};
 
@@ -70,7 +70,6 @@ export const Header = (props) => {
 						</Nav.Link>
 						<Nav.Link
 							onClick={() => {
-								// console.log(`clicked toogle theme`);
 								store.dispatch({ type: "changeTheme" });
 							}}
 						>

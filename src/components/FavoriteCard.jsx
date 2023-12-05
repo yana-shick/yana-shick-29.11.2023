@@ -13,7 +13,6 @@ export const FavoriteCard = (props) => {
 				className="bg-secondary border-0 my-favorites"
 				data-bs-theme={theme}
 				onClick={() => {
-					// console.log(`trying to set city`);
 					props.setDisplayWeather("block");
 					props.setDisplayFavorite("none");
 					props.setCity(props.city.city);
