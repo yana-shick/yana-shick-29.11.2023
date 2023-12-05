@@ -52,7 +52,7 @@ export const Header = (props) => {
 						</Nav.Link>
 						<Nav.Link
 							onClick={() => {
-								console.log(`clicked toogle theme`);
+								// console.log(`clicked toogle theme`);
 								store.dispatch({ type: "changeTheme" });
 							}}
 						>

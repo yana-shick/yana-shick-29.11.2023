@@ -10,7 +10,7 @@ export const Forecast = (props) => {
 	const days = ["Sun", "Mon", "Tue", "Wen", "Thi", "Fri", "Sat"];
 	const day = new Date(dayInStore);
 	let dayName = days[day.getDay()];
-	console.log(`day in forecast: `, dayName);
+	// console.log(`day in forecast: `, dayName);
 
 	return (
 		<Col md={2} xm={12}>

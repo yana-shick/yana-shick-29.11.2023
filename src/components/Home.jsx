@@ -20,7 +20,6 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
-import Button from "react-bootstrap/Button";
 import Toast from "react-bootstrap/Toast";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -42,6 +41,52 @@ export const Home = () => {
 	const [displayFavorite, setDisplayFavorite] = useState("none");
 
 	const theme = useSelector((state) => state.reducerTheme);
+
+	// ---------------------------------------------
+	// -----------------DEFAULT VALUE---------------
+	// ---------------------------------------------
+	useEffect(() => {
+		console.log(
+			"starting default-city useEffect, search-value is: ",
+			document.getElementById("search_bar").value
+		);
+		if (document.getElementById("search_bar").value !== "default-city") return;
+		document.getElementById("search_bar").value = "";
+		const getDefaultCityKey = (position) => {
+			const lat = position.coords.latitude;
+			const lon = position.coords.longitude;
+			const coor = `${lat},${lon}`;
+			console.log(`trying to fetch:  default-city`);
+			fetch(
+				`http://dataservice.accuweather.com/locations/v1/cities/geoposition/search?apikey=${apikey}&q=${coor}`
+				// `http://###`
+			)
+				.then((res) => {
+					return res.json();
+				})
+				.then((data) => {
+					console.log(`reseived data from default request:`, data);
+					if (data.ParentCity) {
+						correctCityName.current = data.ParentCity.LocalizedName;
+						setCitykey(data.ParentCity.Key);
+					} else {
+						correctCityName.current = data.LocalizedName;
+						setCitykey(data.Key);
+						console.log(
+							`default-city: correctCityName: `,
+							correctCityName.current
+						);
+					}
+				})
+				.catch((err) => {
+					document.getElementById("search_bar").value = "";
+					setErrors("weather is temporarily unavaible");
+					setShowToast(true);
+				});
+		};
+		navigator.geolocation.getCurrentPosition(getDefaultCityKey);
+	}, []);
+
 	// ---------------------------------------------
 	// -----------------AUTOCOMPLITE----------------
 	// ---------------------------------------------
@@ -53,58 +98,42 @@ export const Home = () => {
 		}
 		console.log(`trying to fetch:  autocomplite`);
 
-		// fetch(
-		// `http://dataservice.accuweather.com/locations/v1/cities/autocomplete?apikey=${apikey}&q=${city}`
-		// )
-		// .then((res) => {
-		// return res.json();
-		// })
-		// .then((data) => {
-		let data = [
-			{
-				Version: 1,
-				Key: "11111",
-				Type: "City",
-				Rank: 31,
-				LocalizedName: "Tel Aviv",
-				Country: {
-					ID: "IL",
-					LocalizedName: "Israel",
-				},
-				AdministrativeArea: {
-					ID: "TA",
-					LocalizedName: "Tel Aviv",
-				},
-			},
-		];
-		console.log(`received autocomplied data length= ${data.length}`);
-		// add to chrome autocomplite:
-		const datalist = document.getElementById("cities");
-		for (let i = datalist.children.length - 1; i >= 0; i--) {
-			datalist.children[i].remove();
-		}
-		data.forEach((city) => {
-			let option = document.createElement("option");
-			option.value = city.LocalizedName;
-			datalist.appendChild(option);
-		});
+		fetch(
+			`http://dataservice.accuweather.com/locations/v1/cities/autocomplete?apikey=${apikey}&q=${city}`
+			// `http://###`
+		)
+			.then((res) => {
+				return res.json();
+			})
+			.then((data) => {
+				console.log(`received autocomplied data length= ${data.length}`);
+				// add to chrome autocomplite:
+				const datalist = document.getElementById("cities");
+				for (let i = datalist.children.length - 1; i >= 0; i--) {
+					datalist.children[i].remove();
+				}
+				data.forEach((city) => {
+					let option = document.createElement("option");
+					option.value = city.LocalizedName;
+					datalist.appendChild(option);
+				});
 
-		let cityInOptions = false;
-		for (let i = 0; i < datalist.options.length; i++) {
-			if (datalist.options[i].value === city) cityInOptions = true;
-		}
+				let cityInOptions = false;
+				for (let i = 0; i < datalist.options.length; i++) {
+					if (datalist.options[i].value === city) cityInOptions = true;
+				}
 
-		if (data.length === 1 || cityInOptions) {
-			console.log(`trying to set citykey ${data[0].Key}`);
-			correctCityName.current = data[0].LocalizedName;
-			setCitykey(data[0].Key);
-		}
-	});
-	// .catch((err) => {
-	// setErrors("weather is temorarily unavaible");
-	// setShowToast(true);
-	// });
-	// }, [city]);
+				if (data.length === 1 || cityInOptions) {
+					console.log(`trying to set citykey ${data[0].Key}`);
+					correctCityName.current = data[0].LocalizedName;
+					setCitykey(data[0].Key);
+				}
+			})
+			.catch((err) => {
+				setErrors("weather is temporarily unavaible");
+				setShowToast(true);
+			});
+	}, [city]);
 
 	// ---------------------------------------------
 	// ------------WEATHER--+--FORECAST-------------
@@ -117,153 +146,53 @@ export const Home = () => {
 		}
 		// fetch weather:
 		console.log("trying to fetch: current weather");
-		// fetch(
-		// `http://dataservice.accuweather.com/currentconditions/v1/${citykey}?apikey=${apikey}`
-		// )
+		fetch(
+			`http://dataservice.accuweather.com/currentconditions/v1/${citykey}?apikey=${apikey}`
+			// `http://###`
+		)
+			.then((res) => {
+				return res.json();
+			})
+			.then((data) => {
+				console.log(
+					`recieved data current weather: `,
+					correctCityName.current,
+					data,
+					citykey
+				);
+				console.log(
+					`current weather: correctCityName: `,
+					correctCityName.current
+				);
+				document.getElementById("search_bar").value = "";
+				const nameToDispatch = correctCityName.current;
+				store.dispatch(updateActive({ nameToDispatch, data, citykey }));
 
-		// .then((res) => {
-		// return res.json();
-		// })
-		// .then((data) => {
-		let data = [
-			{
-				LocalObservationDateTime: "2023-12-03T19:17:00+02:00",
-				WeatherText: "Always sunny",
-				WeatherIcon: 36,
-				Temperature: {
-					Metric: {
-						Value: 21.7,
-						Unit: "C",
-						UnitType: 17,
-					},
-					Imperial: {
-						Value: 71.0,
-						Unit: "F",
-						UnitType: 18,
-					},
-				},
-			},
-		];
-		console.log(
-			`recieved data current weather: `,
-			correctCityName,
-			data,
-			citykey
-		);
-		document.getElementById("search_bar").value = "";
-		store.dispatch(updateActive({ city, data, citykey }));
+				const isFavorite = document.cookie.includes(`favorite_${citykey}`);
+				store.dispatch(toggleIsFavorite(isFavorite));
+			})
+			.catch((err) => {
+				setErrors("weather is temporarily unavaible");
+				setShowToast(true);
+			});
 
-		const isFavorite = document.cookie.includes(`favorite_${citykey}`);
-		store.dispatch(toggleIsFavorite(isFavorite));
-		// })
-		// .catch((err) => {
-		// setErrors("weather is temorarily unavaible");
-		// setShowToast(true);
-		// });
-		// fetch 5 day forecast:
-		// if (C or F)
+		// fetch object:
 		// returns object
 		console.log("trying to fetch: forecast");
-		// fetch(
-		// `http://dataservice.accuweather.com/forecasts/v1/daily/5day/${citykey}?apikey=${apikey}&metric=true`
-		// )
-		fetch("https://jsonplaceholder.typicode.com/posts", {
-			method: "POST",
-			body: JSON.stringify({
-				Headline: {},
-				DailyForecasts: [
-					{
-						Date: "2023-12-01T07:00:00+02:00",
-						EpochDate: 1701406800,
-						Temperature: {
-							Minimum: {
-								Value: 14.7,
-								Unit: "C",
-								UnitType: 17,
-							},
-							Maximum: {
-								Value: 25.1,
-								Unit: "C",
-								UnitType: 17,
-							},
-						},
-					},
-					{
-						Date: "2023-12-02T07:00:00+02:00",
-						EpochDate: 1701493200,
-						Temperature: {
-							Minimum: {
-								Value: 14.6,
-								Unit: "C",
-								UnitType: 17,
-							},
-							Maximum: {
-								Value: 24.4,
-								Unit: "C",
-								UnitType: 17,
-							},
-						},
-					},
-					{
-						Date: "2023-12-03T07:00:00+02:00",
-						EpochDate: 1701493200,
-						Temperature: {
-							Minimum: {
-								Value: 14.6,
-								Unit: "C",
-								UnitType: 17,
-							},
-							Maximum: {
-								Value: 24.4,
-								Unit: "C",
-								UnitType: 17,
-							},
-						},
-					},
-					{
-						Date: "2023-12-04T07:00:00+02:00",
-						EpochDate: 1701493200,
-						Temperature: {
-							Minimum: {
-								Value: 15.6,
-								Unit: "C",
-								UnitType: 17,
-							},
-							Maximum: {
-								Value: 24.4,
-								Unit: "C",
-								UnitType: 17,
-							},
-						},
-					},
-					{
-						Date: "2023-12-05T07:00:00+02:00",
-						EpochDate: 1701493200,
-						Temperature: {
-							Minimum: {
-								Value: 16.6,
-								Unit: "C",
-								UnitType: 17,
-							},
-							Maximum: {
-								Value: 24.4,
-								Unit: "C",
-								UnitType: 17,
-							},
-						},
-					},
-				],
-			}),
-			headers: {
-				"Content-type": "application/json; charset=UTF-8",
-			},
-		})
+		fetch(
+			`http://dataservice.accuweather.com/forecasts/v1/daily/5day/${citykey}?apikey=${apikey}&metric=true`
+			// "http:###"
+		)
 			.then((res) => {
 				return res.json();
 			})
 			.then((forecastData) => {
 				console.log(`recieved forecastData: `, forecastData);
 				store.dispatch(updateForecast(forecastData));
+			})
+			.catch((err) => {
+				setErrors("weather is temporarily unavaible");
+				setShowToast(true);
 			});
 
 		// ---------------------------------------------
@@ -273,8 +202,7 @@ export const Home = () => {
 
 		const listFavoritesFullData = [];
 
-		// if (displayFavorite === "none") return;
-		const interval = 23 * 60 * 60 * 1000;
+		const interval = 1 * 60 * 60 * 1000;
 
 		let decodedCookie = decodeURIComponent(document.cookie);
 		let arrFromCookie = decodedCookie.split(";");
@@ -286,7 +214,7 @@ export const Home = () => {
 
 		if (!listFavoritesCookie) return;
 		listFavoritesCookie.forEach((val) => {
-			console.log(`favorite from cookie `, val);
+			// console.log(`favorite from cookie `, val);
 			const splitVal = val.split("=");
 			const citykey = splitVal[0].split("_")[1];
 			const city = JSON.parse(splitVal[1]).city;
@@ -296,16 +224,17 @@ export const Home = () => {
 			const now = new Date();
 
 			if (secondsFromCookie - now > interval) {
-				console.log("need to update");
+				// console.log("need to update");
 
 				fetch(
 					`http://dataservice.accuweather.com/currentconditions/v1/${citykey}?apikey=${apikey}`
+					// `http:/###`
 				)
 					.then((res) => {
 						return res.json();
 					})
 					.then((data) => {
-						console.log(`trying to build list with full data`);
+						// console.log(`trying to build list with full data`);
 
 						const weatherText = data[0].WeatherText;
 						listFavoritesFullData.push({
@@ -315,15 +244,14 @@ export const Home = () => {
 						});
 					})
 					.catch((err) => {
-						setErrors("favorites is temorarily unavaible");
+						setErrors("favorites is temporarily unavaible");
 						setShowToast(true);
 						console.log(err);
 					});
 			} else {
-				console.log("no need to update");
+				// console.log("no need to update");
 
 				const weatherText = JSON.parse(splitVal[1]).weatherText;
-
 				listFavoritesFullData.push({
 					citykey,
 					city,
@@ -331,10 +259,10 @@ export const Home = () => {
 				});
 			}
 
-			console.log(
-				`list of favorites trying add to store:: `,
-				listFavoritesFullData
-			);
+			// console.log(
+			// `list of favorites trying add to store:: `,
+			// listFavoritesFullData
+			// );
 			store.dispatch(addListFavorites({ ...listFavoritesFullData }));
 		});
 	}, [citykey]);
@@ -360,6 +288,7 @@ export const Home = () => {
 								list="cities"
 								className="rounded-3 my-search"
 								data-bs-theme={theme}
+								defaultValue="default-city"
 							/>
 							<datalist id="cities">
 								<option>test</option>
@@ -389,8 +318,8 @@ export const Home = () => {
 			/>
 
 			{/* ERROR MESSAGES */}
-			<Toast show={showToast} onClose={toggleShowToast}>
-				<Toast.Body>{errors}</Toast.Body>
+			<Toast show={showToast} onClose={toggleShowToast} className="my-error">
+				<Toast.Body className="text-danger">{errors}</Toast.Body>
 			</Toast>
 		</Container>
 	);

@@ -13,7 +13,6 @@ $text-gray: $gray-300;
 	text-align: center;
 	min-height: 100vh;
 }
-
 .h1 {
 	font-size: calc(2.5rem + 1.5vw);
 }
@@ -23,6 +22,27 @@ $text-gray: $gray-300;
 .h5 {
 	font-size: 1.5rem;
 }
+.input-group-text {
+	background-color: white;
+	border: none;
+	display: inline-block;
+	position: absolute;
+}
+.form-control {
+	border: none;
+}
+.my-navbar {
+	.navbar-toggler {
+		border: none;
+	}
+}
+.my-error {
+	position: fixed;
+	bottom: 50%;
+	right: 50%;
+	transform: translate(50%);
+}
+
 // ---icons---
 
 .favoriteColor {
@@ -31,7 +51,6 @@ $text-gray: $gray-300;
 .notFavoriteColor {
 	color: $not-fovirite;
 }
-
 #favoriteIcon {
 	transition: transform 0.2s linear;
 }
@@ -44,32 +63,15 @@ $text-gray: $gray-300;
 .sunIcon {
 	color: $sun;
 }
-// -----
-
-.input-group-text {
-	background-color: white;
-	border: none;
-	display: inline-block;
-	position: absolute;
-}
-
-.form-control {
-	border: none;
-}
-.my-navbar {
-	.navbar-toggler {
-		border: none;
-	}
-}
 
 // --fovorite--
 
 .my-favorites {
-	box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 3px 0px;
-	transition: transform 0.2s linear;
-	// transition: border-width 0.3s ease-in-out;
+	transition: transform 0.2s ease-in-out;
 }
-
+.card-body {
+	box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 3px 0px;
+}
 .my-favorites:hover {
 	transform: scale(1.1);
 }
@@ -102,6 +104,7 @@ $text-gray: $gray-300;
 		color: $text-gray !important;
 	}
 }
+
 .my-search[data-bs-theme="darkTheme"] {
 	background-color: $text-gray !important;
 }

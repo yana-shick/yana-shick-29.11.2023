@@ -19,7 +19,7 @@ import { Forecast } from "./Forecast";
 
 export const Main = () => {
 	const storeData = useSelector((state) => state.reducerActive);
-	console.log(`main componenta: store: `, storeData);
+	// console.log(`main componenta: store: `, storeData);
 	const weatherCity = storeData.weather?.city;
 	const weatherTempertureValue = storeData.weather?.temperature?.value;
 	const weatherTemperatureUnit = storeData.weather?.temperature?.unit;
@@ -40,9 +40,9 @@ export const Main = () => {
 			store.dispatch(toggleIsFavorite(!isFavorite));
 		} else {
 			document.cookie = `${weatherCityKey}=${weatherCity}`;
-			console.log(
-				`favorite_${weatherCityKey}=${JSON.stringify(storeData.weather)}`
-			);
+			// console.log(
+			// 	`favorite_${weatherCityKey}=${JSON.stringify(storeData.weather)}`
+			// );
 
 			document.cookie = `favorite_${weatherCityKey}=${JSON.stringify(
 				storeData.weather

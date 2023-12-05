@@ -7,7 +7,7 @@ import { Row } from "react-bootstrap";
 
 export const Favorites = (props) => {
 	const storeData = useSelector((state) => state.reducerFavorites);
-	console.log(`favorites componenta: store: `, storeData);
+	// console.log(`favorites componenta: store: `, storeData);
 	return (
 		<Row
 			style={{ display: props.displayStyle }}

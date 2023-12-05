@@ -2,7 +2,7 @@ export const updateActive = (weather) => {
 	return {
 		type: "updateActive",
 		payload: {
-			city: weather.city,
+			city: weather.nameToDispatch,
 			weatherText: weather.data[0].WeatherText,
 			temperature: {
 				value: weather.data[0].Temperature.Metric.Value,
