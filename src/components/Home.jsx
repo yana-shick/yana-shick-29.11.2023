@@ -26,8 +26,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 
 export const Home = () => {
-	// const apikey = "3MSy8fxf6LQX6t2bW0cZl42HAVAuvRAb";
-	const apikey = "9QmfmlRtMb49LFqx7faqstwGAOOPBCTA";
+	const apikey = "3MSy8fxf6LQX6t2bW0cZl42HAVAuvRAb";
+	// const apikey = "9QmfmlRtMb49LFqx7faqstwGAOOPBCTA";
 	const [city, setCity] = useState("");
 	const [citykey, setCitykey] = useState("");
 
