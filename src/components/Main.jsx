@@ -21,14 +21,28 @@ export const Main = () => {
 	const storeData = useSelector((state) => state.reducerActive);
 	// console.log(`main componenta: store: `, storeData);
 	const weatherCity = storeData.weather?.city;
-	const weatherTempertureValue = storeData.weather?.temperature?.value;
-	const weatherTemperatureUnit = storeData.weather?.temperature?.unit;
+	const weatherUnit = storeData.weather?.unit;
+	let weatherTempertureValue = "";
+	if (weatherUnit === "C") {
+		weatherTempertureValue = storeData.weather?.temperature?.value;
+	} else {
+		weatherTempertureValue = (
+			storeData.weather?.temperature?.value * 1.8 +
+			32
+		).toFixed(1);
+	}
+	console.log(`temperaturs:`, weatherTempertureValue, weatherUnit);
+
 	const weatherWeatherText = storeData.weather?.weatherText;
 	const weatherCityKey = storeData.weather?.citykey;
 
 	const weatherIconIndex = storeData.weather?.weatherIcon;
+	let weatherIconIndexCorrect;
+	if (weatherIconIndex < 10) {
+		weatherIconIndexCorrect = `0${weatherIconIndex}`;
+	}
 	const icon = weatherIconIndex
-		? `https://developer.accuweather.com/sites/default/files/${weatherIconIndex}-s.png`
+		? `https://developer.accuweather.com/sites/default/files/${weatherIconIndexCorrect}-s.png`
 		: null;
 
 	const isFavorite = storeData.isFavorite;
@@ -62,7 +76,7 @@ export const Main = () => {
 	const displayForecast = () => {
 		if (!forecast) return null;
 		return forecast.map((day) => {
-			return <Forecast day={day} />;
+			return <Forecast day={day} weatherUnit={weatherUnit} />;
 		});
 	};
 
@@ -78,7 +92,7 @@ export const Main = () => {
 					<Container className="d-flex-column">
 						<div className="h2 text-start">{weatherCity}</div>
 						<div className="h5 text-start">
-							{weatherTempertureValue} {weatherTemperatureUnit}
+							{weatherTempertureValue} {weatherUnit}
 						</div>
 					</Container>
 				</Col>

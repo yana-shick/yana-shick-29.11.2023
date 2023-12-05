@@ -11,7 +11,19 @@ export const Forecast = (props) => {
 	const day = new Date(dayInStore);
 	let dayName = days[day.getDay()];
 	// console.log(`day in forecast: `, dayName);
-
+	let minTemperature = "";
+	let maxTemperature = "";
+	if (props?.weatherUnit === "C") {
+		minTemperature = props?.day?.temperature?.min?.value;
+		maxTemperature = props?.day?.temperature?.min?.value;
+	} else {
+		minTemperature = (props?.day?.temperature?.max?.value * 1.8 + 32).toFixed(
+			1
+		);
+		maxTemperature = (props?.day?.temperature?.max?.value * 1.8 + 32).toFixed(
+			1
+		);
+	}
 	return (
 		<Col md={2} xm={12}>
 			<Card className="border-0 my-forecat" data-bs-theme={theme}>
@@ -20,12 +32,10 @@ export const Forecast = (props) => {
 						{dayName}
 					</Card.Title>
 					<Card.Text className="d-flex justify-content-center  mb-1">
-						min: {props?.day?.temperature?.min?.value}{" "}
-						{props?.day?.temperature?.min?.unit}
+						min: {minTemperature} {props?.weatherUnit}
 					</Card.Text>
-					<Card.Text className="d-flex justify-content-center ">
-						max: {props?.day?.temperature?.max?.value}{" "}
-						{props?.day?.temperature?.max?.unit}
+					<Card.Text className="d-flex justify-content-center">
+						max: {maxTemperature} {props?.weatherUnit}
 					</Card.Text>
 				</Card.Body>
 			</Card>

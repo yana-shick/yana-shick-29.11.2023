@@ -1,6 +1,7 @@
 import React from "react";
 import store from "../store";
 import { useSelector } from "react-redux";
+import { toggleUnitAction } from "../actionCreator";
 
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
@@ -14,8 +15,18 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 export const Header = (props) => {
-	const theme = useSelector((state) => state.reducerTheme);
+	const storeData = useSelector((state) => state.reducerActive);
+	const weatherUnit = storeData.weather?.unit;
+	const toggleUnit = () => {
+		try {
+			// console.log("here");
+			store.dispatch(toggleUnitAction(weatherUnit === "C" ? "F" : "C"));
+		} catch (err) {
+			// console.log(`error catched`, err);
+		}
+	};
 
+	const theme = useSelector((state) => state.reducerTheme);
 	const themeIcon = () => {
 		if (theme === "darkTheme") {
 			return <FontAwesomeIcon icon={faSun} className="sunIcon" size="lg" />;
@@ -49,6 +60,13 @@ export const Header = (props) => {
 							}}
 						>
 							Favorites
+						</Nav.Link>
+						<Nav.Link
+							onClick={() => {
+								toggleUnit();
+							}}
+						>
+							{weatherUnit}
 						</Nav.Link>
 						<Nav.Link
 							onClick={() => {

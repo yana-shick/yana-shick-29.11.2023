@@ -6,12 +6,19 @@ export const updateActive = (weather) => {
 			weatherText: weather.data[0].WeatherText,
 			temperature: {
 				value: weather.data[0].Temperature.Metric.Value,
-				unit: weather.data[0].Temperature.Metric.Unit,
 			},
+			unit: "C",
 			date: weather.data[0].LocalObservationDateTime,
 			weatherIcon: weather.data[0].WeatherIcon,
 			citykey: weather.citykey,
 		},
+	};
+};
+
+export const toggleUnitAction = (unit) => {
+	return {
+		type: "toggleUnit",
+		payload: unit,
 	};
 };
 

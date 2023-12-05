@@ -69,13 +69,14 @@ $text-gray: $gray-300;
 .my-favorites {
 	transition: transform 0.2s ease-in-out;
 }
-.card-body {
-	box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 3px 0px;
-}
+
 .my-favorites:hover {
 	transform: scale(1.1);
 }
 
+.card-body {
+	box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 3px 0px;
+}
 // ---dark theme---
 
 .App[data-bs-theme="darkTheme"] {
