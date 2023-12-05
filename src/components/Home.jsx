@@ -13,6 +13,8 @@ import { updateForecast } from "../actionCreator";
 import { toggleIsFavorite } from "../actionCreator";
 import { addListFavorites } from "../actionCreator";
 
+import { useSelector } from "react-redux";
+
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -39,6 +41,7 @@ export const Home = () => {
 	const [displayWeather, setDisplayWeather] = useState("block");
 	const [displayFavorite, setDisplayFavorite] = useState("none");
 
+	const theme = useSelector((state) => state.reducerTheme);
 	// ---------------------------------------------
 	// -----------------AUTOCOMPLITE----------------
 	// ---------------------------------------------
@@ -50,41 +53,58 @@ export const Home = () => {
 		}
 		console.log(`trying to fetch:  autocomplite`);
 
-		fetch(
-			`http://dataservice.accuweather.com/locations/v1/cities/autocomplete?apikey=${apikey}&q=${city}`
-		)
-			.then((res) => {
-				return res.json();
-			})
-			.then((data) => {
-				console.log(`received autocomplied data length= ${data.length}`);
-				// add to chrome autocomplite:
-				const datalist = document.getElementById("cities");
-				for (let i = datalist.children.length - 1; i >= 0; i--) {
-					datalist.children[i].remove();
-				}
-				data.forEach((city) => {
-					let option = document.createElement("option");
-					option.value = city.LocalizedName;
-					datalist.appendChild(option);
-				});
+		// fetch(
+		// `http://dataservice.accuweather.com/locations/v1/cities/autocomplete?apikey=${apikey}&q=${city}`
+		// )
+		// .then((res) => {
+		// return res.json();
+		// })
+		// .then((data) => {
+		let data = [
+			{
+				Version: 1,
+				Key: "11111",
+				Type: "City",
+				Rank: 31,
+				LocalizedName: "Tel Aviv",
+				Country: {
+					ID: "IL",
+					LocalizedName: "Israel",
+				},
+				AdministrativeArea: {
+					ID: "TA",
+					LocalizedName: "Tel Aviv",
+				},
+			},
+		];
+		console.log(`received autocomplied data length= ${data.length}`);
+		// add to chrome autocomplite:
+		const datalist = document.getElementById("cities");
+		for (let i = datalist.children.length - 1; i >= 0; i--) {
+			datalist.children[i].remove();
+		}
+		data.forEach((city) => {
+			let option = document.createElement("option");
+			option.value = city.LocalizedName;
+			datalist.appendChild(option);
+		});
 
-				let cityInOptions = false;
-				for (let i = 0; i < datalist.options.length; i++) {
-					if (datalist.options[i].value === city) cityInOptions = true;
-				}
+		let cityInOptions = false;
+		for (let i = 0; i < datalist.options.length; i++) {
+			if (datalist.options[i].value === city) cityInOptions = true;
+		}
 
-				if (data.length === 1 || cityInOptions) {
-					console.log(`trying to set citykey ${data[0].Key}`);
-					correctCityName.current = data[0].LocalizedName;
-					setCitykey(data[0].Key);
-				}
-			})
-			.catch((err) => {
-				setErrors("weather is temorarily unavaible");
-				setShowToast(true);
-			});
-	}, [city]);
+		if (data.length === 1 || cityInOptions) {
+			console.log(`trying to set citykey ${data[0].Key}`);
+			correctCityName.current = data[0].LocalizedName;
+			setCitykey(data[0].Key);
+		}
+	});
+	// .catch((err) => {
+	// setErrors("weather is temorarily unavaible");
+	// setShowToast(true);
+	// });
+	// }, [city]);
 
 	// ---------------------------------------------
 	// ------------WEATHER--+--FORECAST-------------
@@ -97,35 +117,147 @@ export const Home = () => {
 		}
 		// fetch weather:
 		console.log("trying to fetch: current weather");
-		fetch(
-			`http://dataservice.accuweather.com/currentconditions/v1/${citykey}?apikey=${apikey}`
-		)
-			.then((res) => {
-				return res.json();
-			})
-			.then((data) => {
-				console.log(
-					`recieved data current weather: `,
-					correctCityName,
-					data,
-					citykey
-				);
-				store.dispatch(updateActive({ city, data, citykey }));
+		// fetch(
+		// `http://dataservice.accuweather.com/currentconditions/v1/${citykey}?apikey=${apikey}`
+		// )
 
-				const isFavorite = document.cookie.includes(`favorite_${citykey}`);
-				store.dispatch(toggleIsFavorite(isFavorite));
-			})
-			.catch((err) => {
-				setErrors("weather is temorarily unavaible");
-				setShowToast(true);
-			});
+		// .then((res) => {
+		// return res.json();
+		// })
+		// .then((data) => {
+		let data = [
+			{
+				LocalObservationDateTime: "2023-12-03T19:17:00+02:00",
+				WeatherText: "Always sunny",
+				WeatherIcon: 36,
+				Temperature: {
+					Metric: {
+						Value: 21.7,
+						Unit: "C",
+						UnitType: 17,
+					},
+					Imperial: {
+						Value: 71.0,
+						Unit: "F",
+						UnitType: 18,
+					},
+				},
+			},
+		];
+		console.log(
+			`recieved data current weather: `,
+			correctCityName,
+			data,
+			citykey
+		);
+		document.getElementById("search_bar").value = "";
+		store.dispatch(updateActive({ city, data, citykey }));
+
+		const isFavorite = document.cookie.includes(`favorite_${citykey}`);
+		store.dispatch(toggleIsFavorite(isFavorite));
+		// })
+		// .catch((err) => {
+		// setErrors("weather is temorarily unavaible");
+		// setShowToast(true);
+		// });
 		// fetch 5 day forecast:
 		// if (C or F)
 		// returns object
 		console.log("trying to fetch: forecast");
-		fetch(
-			`http://dataservice.accuweather.com/forecasts/v1/daily/5day/${citykey}?apikey=${apikey}&metric=true`
-		)
+		// fetch(
+		// `http://dataservice.accuweather.com/forecasts/v1/daily/5day/${citykey}?apikey=${apikey}&metric=true`
+		// )
+		fetch("https://jsonplaceholder.typicode.com/posts", {
+			method: "POST",
+			body: JSON.stringify({
+				Headline: {},
+				DailyForecasts: [
+					{
+						Date: "2023-12-01T07:00:00+02:00",
+						EpochDate: 1701406800,
+						Temperature: {
+							Minimum: {
+								Value: 14.7,
+								Unit: "C",
+								UnitType: 17,
+							},
+							Maximum: {
+								Value: 25.1,
+								Unit: "C",
+								UnitType: 17,
+							},
+						},
+					},
+					{
+						Date: "2023-12-02T07:00:00+02:00",
+						EpochDate: 1701493200,
+						Temperature: {
+							Minimum: {
+								Value: 14.6,
+								Unit: "C",
+								UnitType: 17,
+							},
+							Maximum: {
+								Value: 24.4,
+								Unit: "C",
+								UnitType: 17,
+							},
+						},
+					},
+					{
+						Date: "2023-12-03T07:00:00+02:00",
+						EpochDate: 1701493200,
+						Temperature: {
+							Minimum: {
+								Value: 14.6,
+								Unit: "C",
+								UnitType: 17,
+							},
+							Maximum: {
+								Value: 24.4,
+								Unit: "C",
+								UnitType: 17,
+							},
+						},
+					},
+					{
+						Date: "2023-12-04T07:00:00+02:00",
+						EpochDate: 1701493200,
+						Temperature: {
+							Minimum: {
+								Value: 15.6,
+								Unit: "C",
+								UnitType: 17,
+							},
+							Maximum: {
+								Value: 24.4,
+								Unit: "C",
+								UnitType: 17,
+							},
+						},
+					},
+					{
+						Date: "2023-12-05T07:00:00+02:00",
+						EpochDate: 1701493200,
+						Temperature: {
+							Minimum: {
+								Value: 16.6,
+								Unit: "C",
+								UnitType: 17,
+							},
+							Maximum: {
+								Value: 24.4,
+								Unit: "C",
+								UnitType: 17,
+							},
+						},
+					},
+				],
+			}),
+			headers: {
+				"Content-type": "application/json; charset=UTF-8",
+			},
+		})
 			.then((res) => {
 				return res.json();
 			})
@@ -226,12 +358,19 @@ export const Home = () => {
 									setCity(e.target.value);
 								}}
 								list="cities"
+								className="rounded-3 my-search"
+								data-bs-theme={theme}
 							/>
 							<datalist id="cities">
 								<option>test</option>
 							</datalist>
-
-							<FontAwesomeIcon icon={faMagnifyingGlass} />
+							<InputGroup.Text
+								id="basic-addon"
+								className="rounded-3 my-search ms-0"
+								data-bs-theme={theme}
+							>
+								<FontAwesomeIcon icon={faMagnifyingGlass} id="searchIcon" />
+							</InputGroup.Text>
 						</InputGroup>
 					</Col>
 				</Row>
@@ -242,7 +381,12 @@ export const Home = () => {
 			</Container>
 			{/* FAVORITES */}
 
-			<Favorites displayStyle={displayFavorite} />
+			<Favorites
+				displayStyle={displayFavorite}
+				setCity={setCity}
+				setDisplayWeather={setDisplayWeather}
+				setDisplayFavorite={setDisplayFavorite}
+			/>
 
 			{/* ERROR MESSAGES */}
 			<Toast show={showToast} onClose={toggleShowToast}>

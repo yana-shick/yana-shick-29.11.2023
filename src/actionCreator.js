@@ -27,7 +27,7 @@ export const updateForecast = (forecastFull) => {
 				},
 				max: {
 					value: day.Temperature.Maximum.Value,
-					unit: day.Temperature.Maximum.Value,
+					unit: day.Temperature.Maximum.Unit,
 				},
 			},
 		});

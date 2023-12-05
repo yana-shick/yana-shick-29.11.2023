@@ -67,30 +67,41 @@ export const Main = () => {
 	};
 
 	return (
-		<Container className="border">
-			<Row className="mt-5 border ">
-				<Col md={6} xm={12}>
-					{weatherCity}
-					{weatherTempertureValue}
-					{weatherTemperatureUnit}
-					<Image src={icon} rounded />
+		<Container>
+			<Row className="mt-3 ">
+				<Col
+					md={6}
+					xm={12}
+					className="d-flex justify-content-start align-items-center"
+				>
+					<Image src={icon} rounded className="w-50" />
+					<Container className="d-flex-column">
+						<div className="h2 text-start">{weatherCity}</div>
+						<div className="h5 text-start">
+							{weatherTempertureValue} {weatherTemperatureUnit}
+						</div>
+					</Container>
 				</Col>
-				<Col md={6} xm={12} className="d-flex justify-content-end">
+				<Col
+					md={6}
+					xm={12}
+					className="d-flex justify-content-end align-items-center"
+				>
 					<FontAwesomeIcon
 						icon={faHeart}
-						size="2xl"
+						size="3x"
 						onClick={toggleFavorites}
 						id="favoriteIcon"
 						className={isFavorite ? "favoriteColor" : "notFavoriteColor"}
 					/>
 				</Col>
 			</Row>
-			<Row className="mt-5 border">
-				<Col className="d-flex justify-content-center">
+			<Row className="mt-3 mb-2">
+				<Col className="d-flex justify-content-center h1">
 					{weatherWeatherText}
 				</Col>
 			</Row>
-			<Row className="gy-3 mt-5 d-flex justify-content-around">
+			<Row className="gy-3 my-3 d-flex justify-content-around">
 				{displayForecast()}
 			</Row>
 		</Container>

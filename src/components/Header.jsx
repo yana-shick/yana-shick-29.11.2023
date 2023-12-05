@@ -1,24 +1,39 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import store from "../store";
+import { useSelector } from "react-redux";
 
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import NavDropdown from "react-bootstrap/NavDropdown";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
+import {
+	faEllipsisVertical,
+	faMoon,
+	faSun,
+} from "@fortawesome/free-solid-svg-icons";
 
 export const Header = (props) => {
+	const theme = useSelector((state) => state.reducerTheme);
+
+	const themeIcon = () => {
+		if (theme === "darkTheme") {
+			return <FontAwesomeIcon icon={faSun} className="sunIcon" size="lg" />;
+		}
+		return <FontAwesomeIcon icon={faMoon} className="moonIcon" size="lg" />;
+	};
 	return (
-		<Navbar expand="md" className="bg-body-tertiary">
-			<Container>
+		<Navbar expand="md">
+			<Container
+				className="bg-secondary pb-1 rounded-3 my-navbar"
+				data-bs-theme={theme}
+			>
 				<Navbar.Brand href="/">Herolo Weather Task</Navbar.Brand>
 				<Navbar.Toggle aria-controls="basic-navbar-nav">
 					<FontAwesomeIcon icon={faEllipsisVertical} />
 				</Navbar.Toggle>
 				<Navbar.Collapse id="basic-navbar-nav">
-					<Nav className="ms-auto">
+					<Nav className="ms-auto secondary">
 						<Nav.Link
 							onClick={() => {
 								props.setDisplayWeather("block");
@@ -30,17 +45,19 @@ export const Header = (props) => {
 						<Nav.Link
 							onClick={() => {
 								props.setDisplayWeather("none");
-								props.setDisplayFavorite("block");
+								props.setDisplayFavorite("flex");
 							}}
 						>
 							Favorites
 						</Nav.Link>
-						<NavDropdown title="Dropdown" id="basic-nav-dropdown">
-							<NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-							<NavDropdown.Item href="#action/3.2">
-								Another action
-							</NavDropdown.Item>
-						</NavDropdown>
+						<Nav.Link
+							onClick={() => {
+								console.log(`clicked toogle theme`);
+								store.dispatch({ type: "changeTheme" });
+							}}
+						>
+							{themeIcon()}
+						</Nav.Link>
 					</Nav>
 				</Navbar.Collapse>
 			</Container>

@@ -9,11 +9,20 @@ export const Favorites = (props) => {
 	const storeData = useSelector((state) => state.reducerFavorites);
 	console.log(`favorites componenta: store: `, storeData);
 	return (
-		<Row style={{ display: props.displayStyle }}>
+		<Row
+			style={{ display: props.displayStyle }}
+			className="gy-3 my-3 justify-content-around"
+		>
 			{storeData.map((city) => {
-				return <FavoriteCard city={city} />;
+				return (
+					<FavoriteCard
+						city={city}
+						setCity={props.setCity}
+						setDisplayWeather={props.setDisplayWeather}
+						setDisplayFavorite={props.setDisplayFavorite}
+					/>
+				);
 			})}
-			FAVORITES
 		</Row>
 	);
 };

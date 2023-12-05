@@ -1,0 +1,107 @@
+$primary: rgb(235, 255, 250);
+$secondary: rgb(198, 252, 229);
+$fovirite: rgb(234, 58, 91);
+$pale-favorite: rgb(234, 58, 91, 0.3);
+$sun: rgb(229, 201, 62);
+$dark-primary: rgb(4, 54, 74);
+$dark-secondary: rgb(23, 107, 135);
+@import "~bootstrap/scss/bootstrap";
+$not-fovirite: $gray-600;
+$text-gray: $gray-300;
+
+.App {
+	text-align: center;
+	min-height: 100vh;
+}
+
+.h1 {
+	font-size: calc(2.5rem + 1.5vw);
+}
+.h2 {
+	font-size: calc(2rem + 0.9vw);
+}
+.h5 {
+	font-size: 1.5rem;
+}
+// ---icons---
+
+.favoriteColor {
+	color: $fovirite;
+}
+.notFavoriteColor {
+	color: $not-fovirite;
+}
+
+#favoriteIcon {
+	transition: transform 0.2s linear;
+}
+#favoriteIcon:hover {
+	transform: scale(1.2);
+}
+.moonIcon {
+	color: $dark-primary;
+}
+.sunIcon {
+	color: $sun;
+}
+// -----
+
+.input-group-text {
+	background-color: white;
+	border: none;
+	display: inline-block;
+	position: absolute;
+}
+
+.form-control {
+	border: none;
+}
+.my-navbar {
+	.navbar-toggler {
+		border: none;
+	}
+}
+
+// --fovorite--
+
+.my-favorites {
+	box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 3px 0px;
+	transition: transform 0.2s linear;
+	// transition: border-width 0.3s ease-in-out;
+}
+
+.my-favorites:hover {
+	transform: scale(1.1);
+}
+
+// ---dark theme---
+
+.App[data-bs-theme="darkTheme"] {
+	background-color: $dark-primary !important;
+	color: $text-gray !important;
+}
+
+.my-navbar[data-bs-theme="darkTheme"],
+.my-forecat[data-bs-theme="darkTheme"],
+.my-favorites[data-bs-theme="darkTheme"] {
+	background-color: $dark-secondary !important;
+	color: $text-gray !important;
+}
+
+.my-forecat[data-bs-theme="darkTheme"] {
+	.card-body {
+		background-color: $dark-secondary !important;
+		color: $text-gray !important;
+	}
+}
+
+.my-navbar[data-bs-theme="darkTheme"] {
+	.nav-link,
+	.navbar-brand,
+	.navbar-toggler {
+		color: $text-gray !important;
+	}
+}
+.my-search[data-bs-theme="darkTheme"] {
+	background-color: $text-gray !important;
+}
