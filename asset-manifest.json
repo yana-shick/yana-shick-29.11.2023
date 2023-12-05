@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/yana-shick-29.11.2023/static/css/main.eb5fbf64.css",
+    "main.js": "/yana-shick-29.11.2023/static/js/main.b1cf165b.js",
+    "static/js/787.aafc6230.chunk.js": "/yana-shick-29.11.2023/static/js/787.aafc6230.chunk.js",
+    "index.html": "/yana-shick-29.11.2023/index.html",
+    "main.eb5fbf64.css.map": "/yana-shick-29.11.2023/static/css/main.eb5fbf64.css.map",
+    "main.b1cf165b.js.map": "/yana-shick-29.11.2023/static/js/main.b1cf165b.js.map",
+    "787.aafc6230.chunk.js.map": "/yana-shick-29.11.2023/static/js/787.aafc6230.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.eb5fbf64.css",
+    "static/js/main.b1cf165b.js"
+  ]
+}
