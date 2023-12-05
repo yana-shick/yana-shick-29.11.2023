@@ -58,7 +58,7 @@ export const Home = () => {
 			const coor = `${lat},${lon}`;
 			console.log(`trying to fetch:  default-city`);
 			fetch(
-				`http://dataservice.accuweather.com/locations/v1/cities/geoposition/search?apikey=${apikey}&q=${coor}`
+				`https://dataservice.accuweather.com/locations/v1/cities/geoposition/search?apikey=${apikey}&q=${coor}`
 				// `http://###`
 			)
 				.then((res) => {
@@ -99,7 +99,7 @@ export const Home = () => {
 		console.log(`trying to fetch:  autocomplite`);
 
 		fetch(
-			`http://dataservice.accuweather.com/locations/v1/cities/autocomplete?apikey=${apikey}&q=${city}`
+			`https://dataservice.accuweather.com/locations/v1/cities/autocomplete?apikey=${apikey}&q=${city}`
 			// `http://###`
 		)
 			.then((res) => {
@@ -147,7 +147,7 @@ export const Home = () => {
 		// fetch weather:
 		console.log("trying to fetch: current weather");
 		fetch(
-			`http://dataservice.accuweather.com/currentconditions/v1/${citykey}?apikey=${apikey}`
+			`https://dataservice.accuweather.com/currentconditions/v1/${citykey}?apikey=${apikey}`
 			// `http://###`
 		)
 			.then((res) => {
@@ -180,7 +180,7 @@ export const Home = () => {
 		// returns object
 		console.log("trying to fetch: forecast");
 		fetch(
-			`http://dataservice.accuweather.com/forecasts/v1/daily/5day/${citykey}?apikey=${apikey}&metric=true`
+			`https://dataservice.accuweather.com/forecasts/v1/daily/5day/${citykey}?apikey=${apikey}&metric=true`
 			// "http:###"
 		)
 			.then((res) => {
@@ -227,7 +227,7 @@ export const Home = () => {
 				// console.log("need to update");
 
 				fetch(
-					`http://dataservice.accuweather.com/currentconditions/v1/${citykey}?apikey=${apikey}`
+					`https://dataservice.accuweather.com/currentconditions/v1/${citykey}?apikey=${apikey}`
 					// `http:/###`
 				)
 					.then((res) => {
