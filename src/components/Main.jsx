@@ -37,9 +37,11 @@ export const Main = () => {
 	const weatherCityKey = storeData.weather?.citykey;
 
 	const weatherIconIndex = storeData.weather?.weatherIcon;
-	let weatherIconIndexCorrect;
+	let weatherIconIndexCorrect = "";
 	if (weatherIconIndex < 10) {
 		weatherIconIndexCorrect = `0${weatherIconIndex}`;
+	} else {
+		weatherIconIndexCorrect = weatherIconIndex;
 	}
 	const icon = weatherIconIndex
 		? `https://developer.accuweather.com/sites/default/files/${weatherIconIndexCorrect}-s.png`
